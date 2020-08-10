@@ -1,0 +1,116 @@
+---
+title: "3.2 Querying CYorks OMOP"
+output: html_document
+---
+
+
+
+<div id="person" class="section level2">
+<h2>Person</h2>
+<p>Basic demographic information is held in the <code>person</code> table.</p>
+<pre class="sql"><code>select person_id, year_of_birth
+from person;</code></pre>
+<pre class="r"><code>ggplot(person_year, aes(x = year_of_birth)) + geom_bar()</code></pre>
+<p><img src="/cyorks.docs3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Everything in OMOP is a concept stored in the concept table. When we query many of the data items directly, we just see the concept ids.</p>
+<pre class="sql"><code>select person_id, gender_concept_id
+from person;</code></pre>
+<pre class="r"><code>person_gender &lt;- person_gender %&gt;% 
+  group_by(gender_concept_id) %&gt;% 
+  summarise(n = n())
+
+kable(person_gender, align = &quot;l&quot;)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">gender_concept_id</th>
+<th align="left">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">8507</td>
+<td align="left">23873</td>
+</tr>
+<tr class="even">
+<td align="left">8532</td>
+<td align="left">26099</td>
+</tr>
+<tr class="odd">
+<td align="left">8551</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">45454912</td>
+<td align="left">24</td>
+</tr>
+</tbody>
+</table>
+<p>If we want to find out what the concept ids mean, we need to look in the concept table. The definition of the concept is found in the <code>concept_name</code> field.</p>
+<pre class="sql"><code>select concept_id, concept_name 
+from concept 
+where concept in (8507, 8532, 8551, 45454912);</code></pre>
+<pre class="r"><code>kable(gender_concept, align = &quot;l&quot;)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">concept_id</th>
+<th align="left">concept_name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">8532</td>
+<td align="left">FEMALE</td>
+</tr>
+<tr class="even">
+<td align="left">8551</td>
+<td align="left">UNKNOWN</td>
+</tr>
+<tr class="odd">
+<td align="left">8507</td>
+<td align="left">MALE</td>
+</tr>
+<tr class="even">
+<td align="left">45454912</td>
+<td align="left">Gender unspecified</td>
+</tr>
+</tbody>
+</table>
+<p>We can also join the <code>concept_name</code> field directly onto our gender query.</p>
+<pre class="sql"><code>select person_id, concept_name
+from person
+inner join concept
+on gender_concept_id = concept_id;</code></pre>
+<pre class="r"><code>person_gender_labelled &lt;- person_gender_labelled %&gt;% 
+  group_by(concept_name) %&gt;% 
+  summarise(n = n())
+
+kable(person_gender_labelled, align = &quot;l&quot;, col.names = c(&quot;Gender&quot;, &quot;count&quot;))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Gender</th>
+<th align="left">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">FEMALE</td>
+<td align="left">26099</td>
+</tr>
+<tr class="even">
+<td align="left">Gender unspecified</td>
+<td align="left">24</td>
+</tr>
+<tr class="odd">
+<td align="left">MALE</td>
+<td align="left">23873</td>
+</tr>
+<tr class="even">
+<td align="left">UNKNOWN</td>
+<td align="left">4</td>
+</tr>
+</tbody>
+</table>
+</div>

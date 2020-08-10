@@ -1,0 +1,111 @@
+---
+title: "3.2 Querying CYorks OMOP"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+
+library(ggplot2)
+library(dplyr)
+library(DBI)
+library(knitr)
+
+get_omop_data <- function(sql) {
+  
+  con <- dbConnect(odbc::odbc(), .connection_string = "Driver={SQL Server Native Client 10.0};Server=BHTS-CONYPROD16;Trusted_Connection=yes;Database=CDM_TEST")
+
+  dat <- dbGetQuery(con, sql)
+
+  dbDisconnect(con)
+  
+  return(dat)
+  
+}
+
+```
+```{r getdata}
+
+sql <- "select person_id, year_of_birth from person;"
+person_year <- get_omop_data(sql)
+
+sql <- "select person_id, gender_concept_id from person;"
+person_gender <- get_omop_data(sql)
+
+sql <- "select concept_id, concept_name from concept where concept_id in (8507, 8532, 8551, 45454912);"
+gender_concept <- get_omop_data(sql)
+
+sql <- "select person_id, concept_name
+from person
+inner join concept
+on gender_concept_id = concept_id;"
+person_gender_labelled <- get_omop_data(sql)
+
+```
+
+## Person
+
+Basic demographic information is held in the `person` table.
+
+```{sql eval = FALSE, echo = TRUE}
+select person_id, year_of_birth
+from person;
+```
+
+```{r echo = TRUE}
+
+ggplot(person_year, aes(x = year_of_birth)) + geom_bar()
+
+```
+
+Everything in OMOP is a concept stored in the concept table. When we query many of the data items directly, we just see the concept ids.
+
+```{sql eval = FALSE, echo = TRUE}
+select person_id, gender_concept_id
+from person;
+```
+
+```{r echo=TRUE}
+
+person_gender <- person_gender %>% 
+  group_by(gender_concept_id) %>% 
+  summarise(n = n())
+
+kable(person_gender, align = "l")
+
+```
+
+If we want to find out what the concept ids mean, we need to look in the concept table. The definition of the concept is found in the `concept_name` field.
+
+```{sql eval = FALSE, echo = TRUE}
+select concept_id, concept_name 
+from concept 
+where concept in (8507, 8532, 8551, 45454912);
+```
+
+```{r echo=TRUE}
+
+kable(gender_concept, align = "l")
+
+```
+
+We can also join the `concept_name` field directly onto our gender query.
+
+```{sql eval = FALSE, echo = TRUE}
+select person_id, concept_name
+from person
+inner join concept
+on gender_concept_id = concept_id;
+```
+
+```{r echo=TRUE}
+
+person_gender_labelled <- person_gender_labelled %>% 
+  group_by(concept_name) %>% 
+  summarise(n = n())
+
+kable(person_gender_labelled, align = "l", col.names = c("Gender", "count"))
+
+```

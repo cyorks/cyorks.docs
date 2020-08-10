@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>4 The Flexible Data Model on Connected Yorkshire Data Platform</title>
+    <link>https://cyorks.github.io/cyorks.docs/4-fdm/</link>
+    <description>Recent content in 4 The Flexible Data Model on Connected Yorkshire Data Platform</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="https://cyorks.github.io/cyorks.docs/4-fdm/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>4.1 FDM common data fields</title>
+      <link>https://cyorks.github.io/cyorks.docs/4-fdm/4-1-fdm-common-fields/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cyorks.github.io/cyorks.docs/4-fdm/4-1-fdm-common-fields/</guid>
+      <description>FDM common fields Some fields have been set as standard across FDM dataset to facilitate linking across the FDM and with OMOP data.</description>
+    </item>
+    
+    <item>
+      <title>4.2 Querying CYorks FDM</title>
+      <link>https://cyorks.github.io/cyorks.docs/4-fdm/4-2-querying-fdm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cyorks.github.io/cyorks.docs/4-fdm/4-2-querying-fdm/</guid>
+      <description>Querying the FDMExample FDM queries with code examples.
+select *from fdm;</description>
+    </item>
+    
+  </channel>
+</rss>
