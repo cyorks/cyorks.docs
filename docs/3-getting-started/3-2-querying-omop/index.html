@@ -6,7 +6,7 @@
 <title>3.2 Querying CYorks OMOP - Connected Yorkshire Data Platform</title>
 <meta name="description" content="User documentation for the Connected Yorkshire Data platform">
 <meta name="generator" content="Hugo 0.74.3" />
-<link href="https://cyorks.github.io/cyorks.docs/index.xml" rel="alternate" type="application/rss+xml">
+<link href="https://cyorks.github.io/cyorks.docs//index.xml" rel="alternate" type="application/rss+xml">
 <link rel="canonical" href="https://cyorks.github.io/cyorks.docs/3-getting-started/3-2-querying-omop/">
 <link rel="stylesheet" href="https://cyorks.github.io/cyorks.docs/css/theme.min.css">
 <script src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
@@ -62,7 +62,7 @@ select person_id, gender_concept_idfrom person;person_gender &lt;- person_gend
 <pre class="sql"><code>select person_id, year_of_birth
 from person;</code></pre>
 <pre class="r"><code>ggplot(person_year, aes(x = year_of_birth)) + geom_bar()</code></pre>
-<p><img src="/cyorks.docs3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="/cyorks.docs/3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Everything in OMOP is a concept stored in the concept table. When we query many of the data items directly, we just see the concept ids.</p>
 <pre class="sql"><code>select person_id, gender_concept_id
 from person;</code></pre>
@@ -111,20 +111,20 @@ where concept in (8507, 8532, 8551, 45454912);</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">45454912</td>
+<td align="left">Gender unspecified</td>
+</tr>
+<tr class="even">
+<td align="left">8507</td>
+<td align="left">MALE</td>
+</tr>
+<tr class="odd">
 <td align="left">8532</td>
 <td align="left">FEMALE</td>
 </tr>
 <tr class="even">
 <td align="left">8551</td>
 <td align="left">UNKNOWN</td>
-</tr>
-<tr class="odd">
-<td align="left">8507</td>
-<td align="left">MALE</td>
-</tr>
-<tr class="even">
-<td align="left">45454912</td>
-<td align="left">Gender unspecified</td>
 </tr>
 </tbody>
 </table>
@@ -175,7 +175,7 @@ kable(person_gender_labelled, align = &quot;l&quot;, col.names = c(&quot;Gender&
 
 <nav class="slide-menu">
 <ul>
-<li class=""><a href="https://cyorks.github.io/cyorks.docs">Home</a></li>
+<li class=""><a href="https://cyorks.github.io/cyorks.docs/">Home</a></li>
 
 <li class=" has-sub-menu"><a href="https://cyorks.github.io/cyorks.docs/1-how-to-access/">1 How to access the data platform<span class="mark closed">+</span></a>
   

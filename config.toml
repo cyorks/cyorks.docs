@@ -1,4 +1,4 @@
-baseURL = "https://cyorks.github.io/cyorks.docs"
+baseURL = "https://cyorks.github.io/cyorks.docs/"
 publishDir = "/docs"
 
 ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
