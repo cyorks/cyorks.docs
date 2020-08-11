@@ -12,7 +12,7 @@ The `person` table holds a record for each person with clinical data in the mode
 
 ### Observation period
 
-The `observation_period` table defines a single period fo reach person during which it is possible that clinical data may be observed for that person.
+The `observation_period` table defines a single period for each person during which it is possible that clinical data may be observed for that person.
 
 ### Visits
 

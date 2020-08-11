@@ -18,7 +18,7 @@
       <guid>https://cyorks.github.io/cyorks.docs/3-getting-started/3-1-objects-and-concepts/</guid>
       <description>OMOP objects and concepts OMOP is a Common Data Model adopted for the majority of the clinical data available via the Connected Yorkshire Data Platform.
 Person The person table holds a record for each person with clinical data in the model along with some basic demographic information.
-Observation period The observation_period table defines a single period fo reach person during which it is possible that clinical data may be observed for that person.</description>
+Observation period The observation_period table defines a single period for each person during which it is possible that clinical data may be observed for that person.</description>
     </item>
     
     <item>
