@@ -56,6 +56,10 @@ enableMissingTranslationPlaceholders = false
         name = "Home"
         url = "/"
         weight = 1
+    [[menu.main]]
+        name = "Release notes"
+        url = "/release-notes"
+        weight = 2
 
 # Markup configure section
 # See https://gohugo.io/getting-started/configuration-markup/
