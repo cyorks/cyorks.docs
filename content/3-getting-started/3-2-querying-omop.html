@@ -10,7 +10,7 @@ output: html_document
 <p>Basic demographic information is held in the <code>person</code> table.</p>
 <pre class="sql"><code>select person_id, year_of_birth
 from person;</code></pre>
-<pre class="r"><code>ggplot(person_year, aes(x = year_of_birth)) + geom_bar()</code></pre>
+<pre class="r"><code>ggplot(person_year, aes(x = year_of_birth)) + geom_histogram(binwidth = 1) + theme_classic()</code></pre>
 <p><img src="/cyorks.docs/3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Everything in OMOP is a concept stored in the concept table. When we query many of the data items directly, we just see the concept ids.</p>
 <pre class="sql"><code>select person_id, gender_concept_id
@@ -60,12 +60,12 @@ where concept in (8507, 8532, 8551, 45454912);</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">8507</td>
-<td align="left">MALE</td>
-</tr>
-<tr class="even">
 <td align="left">45454912</td>
 <td align="left">Gender unspecified</td>
+</tr>
+<tr class="even">
+<td align="left">8507</td>
+<td align="left">MALE</td>
 </tr>
 <tr class="odd">
 <td align="left">8532</td>
@@ -113,4 +113,30 @@ kable(person_gender_labelled, align = &quot;l&quot;, col.names = c(&quot;Gender&
 </tr>
 </tbody>
 </table>
+<p>Deaths information is held in a separate table. The following <code>sql</code> code computes the number of deaths on each day. <code>order by</code> is needed for the cumulative sum function <code>cumsum(n)</code> to work as expected.</p>
+<pre class="sql"><code>select death_date, count(*) as n
+from death
+group by death_date
+order by death_date;</code></pre>
+<pre class="r"><code>ggplot(death, aes(x = death_date)) + geom_line(aes(y = cumsum(n))) + theme_classic()</code></pre>
+<p><img src="/cyorks.docs/3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="visits" class="section level2">
+<h2>Visits</h2>
+<p>Visits are documented in the <code>visit_occurrence</code> table. Each visit record represents an encounter that may lead to clinical data being recorded about the person. There are four key linkages to be aware of here:</p>
+<ul>
+<li><code>person_id</code> refers to the person’s record in the <code>person</code> table</li>
+<li><code>visit_concept_id</code> refers to the <code>concept_id</code> in the <code>concept</code> table describing the type of encounter</li>
+<li><code>care_site_id</code> refers to the <code>care_site</code> table where the care site of the encounter is identified</li>
+<li><code>visit_occurrence_id</code> is the primary key for the <code>visit_occurrence</code> record and appears in all clinical data records that link to the visit</li>
+</ul>
+{{% panel status="notice" title="Note" %}}
+Visit information can also be captured in the `visit_detail` table. This is not currently used by Connected Yorkshire, although it may be in a future release.
+{{% /panel %}}
+<p>We can use the <code>visit_occurrence</code> table and its various linkages to explore different aspects of service use across our dataset. For example, we can count number of visits by type of encounter. To do this, we need to join the <code>visit_concept_id</code> to the <code>concept</code> table in order to get the relevant <code>concept_name</code>.</p>
+<pre class="sql"><code>select c.concept_name as encounter_type, count(*) n from visit_occurrence v 
+inner join concept c on v.visit_concept_id = c.concept_id
+group by c.concept_name;</code></pre>
+<pre class="r"><code>ggplot(visit, aes(x = encounter_type, y = n)) + geom_col() + theme_classic()</code></pre>
+<p><img src="/cyorks.docs/3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 </div>

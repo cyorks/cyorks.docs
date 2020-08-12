@@ -43,6 +43,15 @@ inner join concept
 on gender_concept_id = concept_id;"
 person_gender_labelled <- get_omop_data(sql)
 
+sql <- "select death_date, count(*) as n from death group by death_date order by death_date;"
+death <- get_omop_data(sql)
+
+sql <- "select c.concept_name as encounter_type, count(*) as n from visit_occurrence v 
+inner join concept c on v.visit_concept_id = c.concept_id
+group by c.concept_name;"
+visit <- get_omop_data(sql)
+
+
 ```
 
 ## Person
@@ -56,7 +65,7 @@ from person;
 
 ```{r echo = TRUE}
 
-ggplot(person_year, aes(x = year_of_birth)) + geom_bar()
+ggplot(person_year, aes(x = year_of_birth)) + geom_histogram(binwidth = 1) + theme_classic()
 
 ```
 
@@ -109,3 +118,54 @@ person_gender_labelled <- person_gender_labelled %>%
 kable(person_gender_labelled, align = "l", col.names = c("Gender", "count"))
 
 ```
+
+Deaths information is held in a separate table. The following `sql` code computes the number of deaths on each day. `order by` is needed for the cumulative sum function `cumsum(n)` to work as expected.
+
+```{sql eval = FALSE, echo = TRUE}
+select death_date, count(*) as n
+from death
+group by death_date
+order by death_date;
+```
+
+
+```{r echo = TRUE}
+
+ggplot(death, aes(x = death_date)) + geom_line(aes(y = cumsum(n))) + theme_classic()
+
+```
+
+
+## Visits
+
+Visits are documented in the `visit_occurrence` table. Each visit record represents an encounter that may lead to clinical data being recorded about the person. There are four key linkages to be aware of here:
+
+* `person_id` refers to the person's record in the `person` table
+* `visit_concept_id` refers to the `concept_id` in the `concept` table describing the type of encounter
+* `care_site_id` refers to the `care_site` table where the care site of the encounter is identified
+* `visit_occurrence_id` is the primary key for the `visit_occurrence` record and appears in all clinical data records that link to the visit
+
+```{r}
+
+blogdown::shortcode(.name = 'panel', status = 'notice', title = 'Note', 
+  .content = 'Visit information can also be captured in the `visit_detail` table. This is not currently used by Connected Yorkshire, although it may be in a future release.')
+
+```
+
+We can use the `visit_occurrence` table and its various linkages to explore different aspects of service use across our dataset. For example, we can count number of visits by type of encounter. To do this, we need to join the `visit_concept_id` to the `concept` table in order to get the relevant `concept_name`.
+
+```{sql eval = FALSE, echo = TRUE}
+select c.concept_name as encounter_type, count(*) n from visit_occurrence v 
+inner join concept c on v.visit_concept_id = c.concept_id
+group by c.concept_name;
+```
+
+
+```{r echo = TRUE}
+
+ggplot(visit, aes(x = encounter_type, y = n)) + geom_col() + theme_classic()
+
+```
+
+
+
