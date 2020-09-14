@@ -43,7 +43,7 @@ inner join concept
 on gender_concept_id = concept_id;"
 person_gender_labelled <- get_omop_data(sql)
 
-sql <- "select death_date, count(*) as n from death group by death_date order by death_date;"
+sql <- "select death_datetime, count(*) as n from person where death_datetime is not null group by death_datetime order by death_datetime;"
 death <- get_omop_data(sql)
 
 sql <- "select c.concept_name as encounter_type, count(*) as n from visit_occurrence v 
@@ -119,19 +119,20 @@ kable(person_gender_labelled, align = "l", col.names = c("Gender", "count"))
 
 ```
 
-Deaths information is held in a separate table. The following `sql` code computes the number of deaths on each day. `order by` is needed for the cumulative sum function `cumsum(n)` to work as expected.
+Deaths information is also held in the person table. The following `sql` code computes the number of deaths on each day - the time in the datetime value is always 00:00. `order by` is needed for the cumulative sum function `cumsum(n)` to work as expected.
 
 ```{sql eval = FALSE, echo = TRUE}
-select death_date, count(*) as n
-from death
-group by death_date
-order by death_date;
+select death_datetime, count(*) as n
+from person
+where death_datetime is not null
+group by death_datetime
+order by death_datetime;
 ```
 
 
 ```{r echo = TRUE}
 
-ggplot(death, aes(x = death_date)) + geom_line(aes(y = cumsum(n))) + theme_classic()
+ggplot(death, aes(x = death_datetime)) + geom_line(aes(y = cumsum(n))) + theme_classic()
 
 ```
 
