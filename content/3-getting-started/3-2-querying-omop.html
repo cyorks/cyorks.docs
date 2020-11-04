@@ -30,19 +30,19 @@ kable(person_gender, align = &quot;l&quot;)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">8507</td>
-<td align="left">23873</td>
+<td align="left">24180</td>
 </tr>
 <tr class="even">
 <td align="left">8532</td>
-<td align="left">26099</td>
+<td align="left">25661</td>
 </tr>
 <tr class="odd">
 <td align="left">8551</td>
-<td align="left">4</td>
+<td align="left">3</td>
 </tr>
 <tr class="even">
 <td align="left">45454912</td>
-<td align="left">24</td>
+<td align="left">156</td>
 </tr>
 </tbody>
 </table>
@@ -60,8 +60,8 @@ where concept in (8507, 8532, 8551, 45454912);</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">45454912</td>
-<td align="left">Gender unspecified</td>
+<td align="left">8507</td>
+<td align="left">MALE</td>
 </tr>
 <tr class="even">
 <td align="left">8532</td>
@@ -72,8 +72,8 @@ where concept in (8507, 8532, 8551, 45454912);</code></pre>
 <td align="left">UNKNOWN</td>
 </tr>
 <tr class="even">
-<td align="left">8507</td>
-<td align="left">MALE</td>
+<td align="left">45454912</td>
+<td align="left">Gender unspecified</td>
 </tr>
 </tbody>
 </table>
@@ -97,28 +97,29 @@ kable(person_gender_labelled, align = &quot;l&quot;, col.names = c(&quot;Gender&
 <tbody>
 <tr class="odd">
 <td align="left">FEMALE</td>
-<td align="left">26099</td>
+<td align="left">25661</td>
 </tr>
 <tr class="even">
 <td align="left">Gender unspecified</td>
-<td align="left">24</td>
+<td align="left">156</td>
 </tr>
 <tr class="odd">
 <td align="left">MALE</td>
-<td align="left">23873</td>
+<td align="left">24180</td>
 </tr>
 <tr class="even">
 <td align="left">UNKNOWN</td>
-<td align="left">4</td>
+<td align="left">3</td>
 </tr>
 </tbody>
 </table>
-<p>Deaths information is held in a separate table. The following <code>sql</code> code computes the number of deaths on each day. <code>order by</code> is needed for the cumulative sum function <code>cumsum(n)</code> to work as expected.</p>
-<pre class="sql"><code>select death_date, count(*) as n
-from death
-group by death_date
-order by death_date;</code></pre>
-<pre class="r"><code>ggplot(death, aes(x = death_date)) + geom_line(aes(y = cumsum(n))) + theme_classic()</code></pre>
+<p>Deaths information is also held in the person table. The following <code>sql</code> code computes the number of deaths on each day - the time in the datetime value is always 00:00. <code>order by</code> is needed for the cumulative sum function <code>cumsum(n)</code> to work as expected.</p>
+<pre class="sql"><code>select death_datetime, count(*) as n
+from person
+where death_datetime is not null
+group by death_datetime
+order by death_datetime;</code></pre>
+<pre class="r"><code>ggplot(death, aes(x = death_datetime)) + geom_line(aes(y = cumsum(n))) + theme_classic()</code></pre>
 <p><img src="/cyorks.docs/3-getting-started/3-2-querying-omop_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="visits" class="section level2">

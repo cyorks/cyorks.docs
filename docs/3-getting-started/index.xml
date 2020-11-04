@@ -29,7 +29,7 @@ Observation period The observation_period table defines a single period for each
       <guid>https://cyorks.github.io/cyorks.docs/3-getting-started/3-2-querying-omop/</guid>
       <description>PersonBasic demographic information is held in the person table.
 select person_id, year_of_birthfrom person;ggplot(person_year, aes(x = year_of_birth)) + geom_histogram(binwidth = 1) + theme_classic()Everything in OMOP is a concept stored in the concept table. When we query many of the data items directly, we just see the concept ids.
-select person_id, gender_concept_idfrom person;person_gender &amp;lt;- person_gender %&amp;gt;% group_by(gender_concept_id) %&amp;gt;% summarise(n = n())kable(person_gender, align = &amp;quot;l&amp;quot;)gender_concept_idn850723873853226099855144545491224If we want to find out what the concept ids mean, we need to look in the concept table.</description>
+select person_id, gender_concept_idfrom person;person_gender &amp;lt;- person_gender %&amp;gt;% group_by(gender_concept_id) %&amp;gt;% summarise(n = n())kable(person_gender, align = &amp;quot;l&amp;quot;)gender_concept_idn8507241808532256618551345454912156If we want to find out what the concept ids mean, we need to look in the concept table.</description>
     </item>
     
   </channel>
